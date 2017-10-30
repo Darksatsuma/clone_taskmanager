@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'bundler/setup'
+Bundler.require(:default)
+
+Dir[File.dirname(__FILE__) + '/app/**/*.rb'].each do |source_file|
+  require source_file
+end
+
+DatabaseInitializer.new.check_database
+
+puts "Welcome to Task Manager!"
+
+arguments = ArgumentsParser.new.parse
+
+case arguments[:command]
+when "add"
+  if Task.new(arguments).save
+    puts "Task successfully added!"
+  end
+when "list"
+  TaskView.new(Task.all).print
+end
